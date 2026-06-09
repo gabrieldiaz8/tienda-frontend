@@ -1,0 +1,122 @@
+<!-- Hero -->
+<section class="hero" id="inicio">
+  <div class="hero-bg"></div>
+  <div class="hero-overlay"></div>
+
+  <div class="hero-slides">
+    @for (slide of slides; track $index) {
+      <div class="hero-slide" [class.active]="$index === currentSlide">
+        <h1 class="hero-title">{{ slide.title }}</h1>
+        <p class="hero-subtitle">{{ slide.subtitle }}</p>
+      </div>
+    }
+  </div>
+
+
+  <div class="hero-controls">
+    @for (slide of slides; track $index) {
+      <button class="hero-dot" [class.active]="$index === currentSlide"
+        (click)="goToSlide($index)" attr.aria-label="Slide {{$index+1}}"></button>
+    }
+  </div>
+
+  <button class="hero-arrow left" (click)="prevSlide()" aria-label="Anterior">
+    <svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+  </button>
+  <button class="hero-arrow right" (click)="nextSlide()" aria-label="Siguiente">
+    <svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+  </button>
+</section>
+
+<!-- Catálogo -->
+<section class="section catalogo" id="catalogo" #catalogoSection>
+  <div class="catalogo-header">
+    <h2 class="catalogo-title">Nuestros Productos</h2>
+    <p class="catalogo-desc">Bienvenidos a la tienda oficial de Adira</p>
+  </div>
+
+  <div class="catalogo-filters">
+    @for (cat of categories; track cat) {
+      <button class="filter-btn"
+        [class.active]="(cat === 'Todas' && !selectedCategory) || cat === selectedCategory"
+        (click)="selectCategory(cat)">{{ cat }}</button>
+    }
+  </div>
+
+  <div class="catalogo-grid">
+    @for (product of filteredProducts; track product.id) {
+      <div class="product-card" (click)="openModal(product)">
+        <div class="product-img">
+          <img [src]="getImageUrl(product)" [alt]="product.name" loading="lazy">
+        </div>
+        <div class="product-info">
+          <h3 class="product-name">{{ product.name }}</h3>
+          <span class="product-category">{{ product.category }}</span>
+          <span class="product-price">${{ product.price.toLocaleString('es-AR') }}</span>
+        </div>
+      </div>
+    } @empty {
+      <p class="catalogo-empty">No hay productos disponibles.</p>
+    }
+  </div>
+</section>
+
+<!-- Modal -->
+@if (selectedProduct) {
+  <div class="modal-overlay" (click)="closeModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <button class="modal-close" (click)="closeModal()">&times;</button>
+      <div class="modal-img">
+        <img [src]="getImageUrl(selectedProduct)" [alt]="selectedProduct.name">
+      </div>
+      <div class="modal-body">
+        <h2 class="modal-title">{{ selectedProduct.name }}</h2>
+        <span class="modal-category">{{ selectedProduct.category }}</span>
+        <p class="modal-desc">{{ selectedProduct.description }}</p>
+        <div class="modal-meta">
+          <span class="modal-material">{{ selectedProduct.material }}</span>
+          <span class="modal-price">${{ selectedProduct.price.toLocaleString('es-AR') }}</span>
+        </div>
+        <a class="modal-wa"
+          [href]="'https://www.instagram.com/adira.moon/?text=' + encode('Hola, quiero comprar ' + selectedProduct.name)"
+          target="_blank">Consultar por Instagram</a>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- Contacto -->
+<section class="section contacto" id="contacto" #contactoSection>
+  <div class="contacto-container">
+    <div class="contacto-info">
+      <h2 class="contacto-title">Contactanos</h2>
+      <p class="contacto-desc">Escribinos y te responderemos a la brevedad.</p>
+      <div class="contacto-details">
+        <div class="contacto-item">
+          <span class="contacto-label">WhatsApp</span>
+          <a class="contacto-value" href="https://wa.me/5493534014165" target="_blank">Contacto Flor</a>
+          <!-- <a class="contacto-value" href="https://wa.me/543536565933" target="_blank">Contacto Gabi</a> -->
+        </div>
+        <div class="contacto-item">
+          <span class="contacto-label">Instagram</span>
+          <a class="contacto-value" href="https://www.instagram.com/adira.moon/" target="_blank">@adira.moon</a>
+        </div>
+        <div class="contacto-item">
+          <span class="contacto-label">Ubicación</span>
+          <span class="contacto-value">Villa María, Córdoba</span>
+        </div>
+      </div>
+    </div>
+
+    <form class="contacto-form" (ngSubmit)="submitContact()" #form="ngForm">
+      <input class="contacto-input" [(ngModel)]="contactForm.name" name="name" placeholder="Tu nombre" required>
+      <textarea class="contacto-input contacto-textarea" [(ngModel)]="contactForm.message" name="message" placeholder="Tu mensaje" rows="4" required></textarea>
+      <button class="contacto-btn" type="submit">Enviar por WhatsApp</button>
+    </form>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <p>&copy; 2026 Adira. Todos los derechos reservados.</p>
+</footer>

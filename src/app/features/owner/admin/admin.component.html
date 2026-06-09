@@ -1,0 +1,85 @@
+<div class="admin-page">
+  <header class="admin-header">
+    <h1 class="admin-title">Panel de Administración</h1>
+    <div class="admin-actions">
+      <button class="admin-btn" (click)="startCreate()">+ Nuevo Producto</button>
+      <button class="admin-btn admin-btn-outline" (click)="logout()">Cerrar Sesión</button>
+    </div>
+  </header>
+
+  @if (error) {
+    <div class="admin-error">{{ error }}</div>
+  }
+
+  <!-- Formulario -->
+  @if (editingProduct) {
+    <div class="admin-form" id="edit-form">
+      <h2>{{ isCreating ? 'Nuevo Producto' : 'Editar Producto' }}</h2>
+
+      <div class="form-grid">
+        <input class="form-input" [(ngModel)]="editingProduct.name" name="name" placeholder="Nombre" required>
+        <input class="form-input" type="number" [(ngModel)]="editingProduct.price" name="price" placeholder="Precio" required>
+
+        <select class="form-input" [(ngModel)]="editingProduct.category" name="category">
+          @for (cat of categories; track cat) {
+            <option [value]="cat">{{ cat }}</option>
+          }
+        </select>
+
+        <select class="form-input" [(ngModel)]="editingProduct.material" name="material">
+          @for (mat of materials; track mat) {
+            <option [value]="mat">{{ mat }}</option>
+          }
+        </select>
+
+      </div>
+
+      <textarea class="form-input form-textarea" [(ngModel)]="editingProduct.description" name="description"
+        placeholder="Descripción" rows="3" required></textarea>
+
+      <input class="form-input" type="file" (change)="onFileSelected($event)" accept="image/*">
+
+      <div class="form-actions">
+        <button class="admin-btn" (click)="save()" [disabled]="loading">
+          {{ loading ? 'Guardando…' : 'Guardar' }}
+        </button>
+        <button class="admin-btn admin-btn-outline" (click)="cancelEdit()">Cancelar</button>
+      </div>
+    </div>
+  }
+
+  <!-- Tabla -->
+  <div class="admin-table-wrap">
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>Imagen</th>
+          <th>Nombre</th>
+          <th>Categoría</th>
+          <th>Material</th>
+          <th>Precio</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (product of products; track product.id) {
+          <tr>
+            <td>
+              <img class="admin-thumb" [src]="getImageUrl(product)" [alt]="product.name">
+            </td>
+            <td>{{ product.name }}</td>
+            <td>{{ product.category }}</td>
+            <td>{{ product.material }}</td>
+            <td>${{ product.price.toLocaleString('es-AR') }}</td>
+            <td>
+              <button class="admin-btn admin-btn-sm" (click)="startEdit(product)">Editar</button>
+              <button class="admin-btn admin-btn-sm admin-btn-danger" (click)="deleteProduct(product.id)">Eliminar</button>
+            </td>
+          </tr>
+        } @empty {
+          <tr><td colspan="6" class="admin-empty">No hay productos.</td></tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
