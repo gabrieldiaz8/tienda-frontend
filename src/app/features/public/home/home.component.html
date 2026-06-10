@@ -52,7 +52,8 @@
         <div class="product-info">
           <h3 class="product-name">{{ product.name }}</h3>
           <span class="product-category">{{ product.category }}</span>
-          <span class="product-price">${{ product.price.toLocaleString('es-AR') }}</span>
+          <!--${{ +product.price | number:'1.0-0':'es-AR' }}  Para cuando arregle que el back pase el precio como num y no como string-->
+          <span class="product-price">${{ +product.price | number:'1.0-0':'es-AR' }}</span>
         </div>
       </div>
     } @empty {
@@ -75,7 +76,8 @@
         <p class="modal-desc">{{ selectedProduct.description }}</p>
         <div class="modal-meta">
           <span class="modal-material">{{ selectedProduct.material }}</span>
-          <span class="modal-price">${{ selectedProduct.price.toLocaleString('es-AR') }}</span>
+          <!--${{ +selectedProduct.price | number:'1.0-0':'es-AR' }}  Para cuando arregle que el back pase el precio como num y no como string-->
+          <span class="modal-price">${{ +selectedProduct.price | number:'1.0-0':'es-AR' }}</span>
         </div>
         <a class="modal-wa"
           [href]="'https://www.instagram.com/adira.moon/?text=' + encode('Hola, quiero comprar ' + selectedProduct.name)"
