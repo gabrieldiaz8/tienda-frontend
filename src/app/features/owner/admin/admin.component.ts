@@ -24,7 +24,7 @@ export class AdminComponent implements OnInit {
   isCreating = false;
 
   categories = ['Aros', 'Pulseras', 'Collares', 'Dijes', 'Anillos', 'Abridores', 'Accesorios', 'Invierno'];
-  materials = ['Plata925', 'Oro', 'Bañados en Plata', 'Acero Blanco', 'Acero Dorado', 'Acero Quirurgico'];
+  materials = ['Plata925', 'Oro', 'Bañados en Plata', 'Acero Blanco', 'Acero Dorado', 'Acero Quirurgico', 'Otro'];
 
   constructor(
     public auth: AuthService,
