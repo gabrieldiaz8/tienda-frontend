@@ -480,3 +480,8 @@
   from { opacity: 0; transform: translateY(30px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+/*Para forzar como se ve la página en celulares*/
+@media (max-width: 900px) and (min-width: 701px) {
+  .catalogo-grid { grid-template-columns: repeat(3, 1fr); }
+}
