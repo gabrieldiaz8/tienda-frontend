@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ProductService } from '../../../core/services/product.service';
 import { ProductInterface } from '../../../core/interfaces/product.interface';
+import { CartService } from '../../../core/services/cart.service';
 import { environment } from '../../../../environments/environment';
 
 interface Slide { title: string; subtitle: string; }
@@ -37,7 +38,10 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     { title: 'Envíos a todo el país', subtitle: 'Joyas para ti, sin importar dónde estés.' },
   ];
 
-  constructor(private productService: ProductService) {}
+  constructor(
+    private productService: ProductService,
+    private cartService: CartService,
+  ) {}
 
   ngOnInit(): void {
     this.loadProducts();
@@ -117,6 +121,11 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     };
     setTimeout(check, 300);
     window.addEventListener('hashchange', check);
+  }
+
+  addToCart(product: ProductInterface): void {
+    this.cartService.addToCart(product);
+    this.closeModal();
   }
 
   encode(str: string): string {

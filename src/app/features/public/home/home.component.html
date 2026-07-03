@@ -79,9 +79,11 @@
           <!--${{ +selectedProduct.price | number:'1.0-0':'es-AR' }}  Para cuando arregle que el back pase el precio como num y no como string-->
           <span class="modal-price">${{ +selectedProduct.price.toLocaleString('es-AR') }}</span>
         </div>
-        <a class="modal-wa"
-          [href]="'https://www.instagram.com/adira.moon/?text=' + encode('Hola, quiero comprar ' + selectedProduct.name)"
-          target="_blank">Consultar por Instagram</a>
+        @if (selectedProduct.stock === 0) {
+          <button class="modal-wa" disabled style="opacity: 0.5; cursor: not-allowed;">Sin stock</button>
+        } @else {
+          <button class="modal-wa" (click)="addToCart(selectedProduct)">Agregar al carrito</button>
+        }
       </div>
     </div>
   </div>

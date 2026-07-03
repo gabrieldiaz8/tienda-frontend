@@ -1,7 +1,8 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, inject } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../core/services/auth.service';
+import { CartService } from '../../../core/services/cart.service';
 
 @Component({
   selector: 'app-navbar',
@@ -13,6 +14,8 @@ import { AuthService } from '../../../core/services/auth.service';
 export class NavbarComponent {
   scrolled = false;
   menuOpen = false;
+  private cartService = inject(CartService);
+  cartCount$ = this.cartService.getCount();
 
   constructor(
     public auth: AuthService,

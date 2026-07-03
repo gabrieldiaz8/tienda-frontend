@@ -53,7 +53,7 @@ export class AdminComponent implements OnInit {
   }
 
   startCreate(): void {
-    this.editingProduct = { name: '', description: '', price: 0, category: this.categories[0], material: this.materials[0] };
+    this.editingProduct = { name: '', description: '', price: 0, stock: 0, category: this.categories[0], material: this.materials[0] };
     this.selectedFile = null;
     this.isCreating = true;
   }
@@ -98,14 +98,14 @@ export class AdminComponent implements OnInit {
       const data: Partial<ProductInterface> = {
         name: p.name,
         description: p.description,
+        price: p.price,
+        stock: p.stock,
         category: p.category,
         material: p.material,
         imageUrl: imageUrl ?? p.imageUrl ?? undefined,
       };
 
-      if (this.isCreating) {
-        data.price = p.price;
-      } else {
+      if (!this.isCreating) {
         const parsedPrice = Number(p.price);
         if (Number.isFinite(parsedPrice)) {
           data.price = parsedPrice;

@@ -1,0 +1,50 @@
+<section class="cart-section">
+  <h1>Carrito de compras</h1>
+
+  @if ((items$ | async); as items) {
+    @if (items.length === 0) {
+      <p class="cart-empty">El carrito está vacío.</p>
+    } @else {
+      <div class="cart-items">
+        @for (item of items; track item.product.id) {
+          <div class="cart-item">
+            <img [src]="item.product.imageUrl || 'assets/placeholder.svg'" [alt]="item.product.name" class="cart-item-img">
+            <div class="cart-item-info">
+              <h3>{{ item.product.name }}</h3>
+              <p class="cart-item-price">${{ item.product.price.toLocaleString('es-AR') }} c/u</p>
+            </div>
+            <div class="cart-item-qty">
+              <button (click)="updateQuantity(item, item.quantity - 1)">−</button>
+              <span>{{ item.quantity }}</span>
+              <button (click)="updateQuantity(item, item.quantity + 1)">+</button>
+            </div>
+            <p class="cart-item-subtotal">${{ (item.product.price * item.quantity).toLocaleString('es-AR') }}</p>
+            <button class="cart-item-remove" (click)="remove(item)">✕</button>
+          </div>
+        }
+      </div>
+
+      <div class="cart-summary">
+        <div class="cart-total">
+          <strong>Total:</strong> ${{ total.toLocaleString('es-AR') }}
+        </div>
+
+        <div class="cart-form">
+          <label>Forma de pago</label>
+          <select [(ngModel)]="paymentMethod">
+            <option value="Efectivo">Efectivo</option>
+            <option value="Transferencia">Transferencia</option>
+            <option value="Otro">Otro</option>
+          </select>
+
+          <label>Nombre (opcional)</label>
+          <input type="text" [(ngModel)]="customerName" placeholder="Tu nombre">
+
+          <button class="cart-submit" (click)="submitOrder()" [disabled]="submitting">
+            {{ submitting ? 'Procesando...' : 'Continuar por WhatsApp' }}
+          </button>
+        </div>
+      </div>
+    }
+  }
+</section>

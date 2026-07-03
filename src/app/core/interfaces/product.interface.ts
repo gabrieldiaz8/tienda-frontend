@@ -7,4 +7,5 @@ export interface ProductInterface {
   material: string;
   imageUrl?: string | null;
   createdByUserId: number;
+  stock: number;
 }

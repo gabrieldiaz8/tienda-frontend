@@ -5,4 +5,5 @@ export const routes: Routes = [
   { path: 'home', redirectTo: '', pathMatch: 'full' },
   { path: 'login', loadComponent: () => import('./features/public/login/login.component').then(m => m.LoginComponent) },
   { path: 'admin', loadComponent: () => import('./features/owner/admin/admin.component').then(m => m.AdminComponent) },
+  { path: 'carrito', loadComponent: () => import('./features/public/cart/cart.component').then(m => m.CartComponent) },
 ];
