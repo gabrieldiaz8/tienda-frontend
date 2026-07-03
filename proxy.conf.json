@@ -1,0 +1,22 @@
+{
+  "/auth/*": {
+    "target": "https://tienda-backend-production-043b.up.railway.app",
+    "secure": false,
+    "changeOrigin": true
+  },
+  "/products*": {
+    "target": "https://tienda-backend-production-043b.up.railway.app",
+    "secure": false,
+    "changeOrigin": true
+  },
+  "/orders*": {
+    "target": "https://tienda-backend-production-043b.up.railway.app",
+    "secure": false,
+    "changeOrigin": true
+  },
+  "/uploads/*": {
+    "target": "https://tienda-backend-production-043b.up.railway.app",
+    "secure": false,
+    "changeOrigin": true
+  }
+}

@@ -8,7 +8,7 @@
       <div class="cart-items">
         @for (item of items; track item.product.id) {
           <div class="cart-item">
-            <img [src]="item.product.imageUrl || 'assets/placeholder.svg'" [alt]="item.product.name" class="cart-item-img">
+            <img [src]="item.product.imageUrl || 'placeholder.svg'" [alt]="item.product.name" class="cart-item-img">
             <div class="cart-item-info">
               <h3>{{ item.product.name }}</h3>
               <p class="cart-item-price">${{ item.product.price.toLocaleString('es-AR') }} c/u</p>

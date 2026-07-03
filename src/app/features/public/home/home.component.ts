@@ -4,6 +4,8 @@ import { CommonModule } from '@angular/common';
 import { ProductService } from '../../../core/services/product.service';
 import { ProductInterface } from '../../../core/interfaces/product.interface';
 import { CartService } from '../../../core/services/cart.service';
+import { ToastService } from '../../../core/services/toast.service';
+import { ToastComponent } from '../../../shared/components/toast/toast.component';
 import { environment } from '../../../../environments/environment';
 
 interface Slide { title: string; subtitle: string; }
@@ -11,7 +13,7 @@ interface Slide { title: string; subtitle: string; }
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ToastComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
@@ -41,6 +43,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     private productService: ProductService,
     private cartService: CartService,
+    private toastService: ToastService,
   ) {}
 
   ngOnInit(): void {
@@ -125,6 +128,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   addToCart(product: ProductInterface): void {
     this.cartService.addToCart(product);
+    this.toastService.show(`${product.name} agregado al carrito`);
     this.closeModal();
   }
 

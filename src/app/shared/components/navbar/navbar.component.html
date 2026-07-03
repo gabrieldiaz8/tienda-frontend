@@ -19,16 +19,18 @@
       <span>WhatsApp</span>
     </a>
   -->
-    <a href="https://www.instagram.com/adira.moon/" class="nav-ig" target="_blank">Instagram</a>
 
     <a routerLink="/carrito" class="nav-cart">
-      🛒
+      <img src="Carrito.svg" alt="Carrito" height="24">
       @if ((cartCount$ | async); as count) {
         @if (count > 0) {
           <span class="cart-badge">{{ count }}</span>
         }
       }
     </a>
+
+    <a href="https://www.instagram.com/adira.moon/" class="nav-ig" target="_blank">Instagram</a>
+
 
     @if (isLoggedIn) {
       <button class="nav-logout" (click)="logout()" title="Cerrar sesión">Salir</button>
