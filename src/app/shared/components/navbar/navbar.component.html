@@ -6,7 +6,11 @@
     <li><a (click)="scrollTo('catalogo')">Catálogo</a></li>
     <li><a (click)="scrollTo('contacto')">Contacto</a></li>
     @if (isLoggedIn && (role === 'OWNER' || role === 'SUPER_ADMIN')) {
-      <li><a (click)="goToAdmin()">Panel de Edición</a></li>
+      <li><a (click)="goToAdmin()">Productos</a></li>
+    }
+    @if (isLoggedIn && role === 'SUPER_ADMIN') {
+      <li><a routerLink="/admin/categories">Categorías</a></li>
+      <li><a routerLink="/admin/users">Usuarios</a></li>
     }
   </ul>
   

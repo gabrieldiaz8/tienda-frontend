@@ -2,10 +2,12 @@ import { Component, OnInit, ElementRef, ViewChild, AfterViewInit, OnDestroy } fr
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ProductService } from '../../../core/services/product.service';
+import { CategoryService, CategoryInterface } from '../../../core/services/category.service';
 import { ProductInterface } from '../../../core/interfaces/product.interface';
 import { CartService } from '../../../core/services/cart.service';
 import { ToastService } from '../../../core/services/toast.service';
 import { ToastComponent } from '../../../shared/components/toast/toast.component';
+import { CurrencyFormatPipe } from '../../../shared/pipes/currency-format.pipe';
 import { environment } from '../../../../environments/environment';
 
 interface Slide { title: string; subtitle: string; }
@@ -13,7 +15,7 @@ interface Slide { title: string; subtitle: string; }
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, FormsModule, ToastComponent],
+  imports: [CommonModule, FormsModule, ToastComponent, CurrencyFormatPipe],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
@@ -23,16 +25,15 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   products: ProductInterface[] = [];
   filteredProducts: ProductInterface[] = [];
-  selectedCategory: string | null = null;
+  selectedCategory: number | null = null;
   selectedProduct: ProductInterface | null = null;
+  categories: CategoryInterface[] = [];
   apiUrl = environment.apiUrl;
 
   currentSlide = 0;
   slideInterval: any;
 
   contactForm = { name: '', message: '' };
-
-  categories = ['Todas', 'Aros', 'Pulseras', 'Collares', 'Dijes', 'Anillos', 'Abridores', 'Accesorios', 'Invierno'];
 
   slides: Slide[] = [
     { title: 'Toda la tendencia', subtitle: 'Todo lo que necesitas para destacar.' },
@@ -42,12 +43,14 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   constructor(
     private productService: ProductService,
+    private categoryService: CategoryService,
     private cartService: CartService,
     private toastService: ToastService,
   ) {}
 
   ngOnInit(): void {
     this.loadProducts();
+    this.loadCategories();
     this.startSlider();
   }
 
@@ -66,19 +69,24 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
+  loadCategories(): void {
+    this.categoryService.findActive().subscribe(data => {
+      this.categories = data;
+    });
+  }
+
   filterProducts(): void {
-    if (!this.selectedCategory || this.selectedCategory === 'Todas') {
+    if (this.selectedCategory === null) {
       this.filteredProducts = this.products;
     } else {
       this.filteredProducts = this.products.filter(
-        p => p.category === this.selectedCategory
+        p => (p.categoriaId ?? p.categoria?.id) === this.selectedCategory
       );
     }
   }
 
-  selectCategory(cat: string): void {
-    this.selectedCategory = cat === this.selectedCategory && cat !== 'Todas' ? null : cat;
-    if (cat === 'Todas') this.selectedCategory = null;
+  selectCategory(catId: number | null): void {
+    this.selectedCategory = this.selectedCategory === catId ? null : catId;
     this.filterProducts();
   }
 
@@ -141,7 +149,11 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     if (product.imageUrl.startsWith('http')) return product.imageUrl;
     return `${this.apiUrl}${product.imageUrl}`;
   }
-  
+
+  getCategoryName(product: ProductInterface): string {
+    return product.categoria?.nombre || product.category || '';
+  }
+
   submitContact(): void {
     const { name, message } = this.contactForm;
     const text = encodeURIComponent(`Hola, soy ${name}. ${message}`);

@@ -1,50 +1,59 @@
-<section class="cart-section">
-  <h1>Carrito de compras</h1>
+﻿<section class="cart-page">
+  <div class="cart-container">
+    <h1 class="cart-title">Carrito de compras</h1>
 
-  @if ((items$ | async); as items) {
-    @if (items.length === 0) {
-      <p class="cart-empty">El carrito está vacío.</p>
-    } @else {
-      <div class="cart-items">
-        @for (item of items; track item.product.id) {
-          <div class="cart-item">
-            <img [src]="item.product.imageUrl || 'placeholder.svg'" [alt]="item.product.name" class="cart-item-img">
-            <div class="cart-item-info">
-              <h3>{{ item.product.name }}</h3>
-              <p class="cart-item-price">${{ item.product.price.toLocaleString('es-AR') }} c/u</p>
+    @if ((items$ | async); as items) {
+      @if (items.length === 0) {
+        <div class="cart-empty">
+          <p>El carrito está vacío.</p>
+          <a class="cart-back-link" routerLink="/home">Ver catálogo</a>
+        </div>
+      } @else {
+        <div class="cart-items">
+          @for (item of items; track item.product.id) {
+            <div class="cart-item">
+              <img [src]="item.product.imageUrl || '/placeholder.svg'" [alt]="item.product.name" class="cart-item-img">
+              <div class="cart-item-info">
+                <h3 class="cart-item-name">{{ item.product.name }}</h3>
+                <p class="cart-item-meta">{{ item.product.material }} · {{ item.product.categoria?.nombre || item.product.category }}</p>
+                <p class="cart-item-price">{{ item.product.price | currencyFormat }} c/u</p>
+              </div>
+              <div class="cart-item-qty">
+                <button class="qty-btn" (click)="updateQuantity(item, item.quantity - 1)">−</button>
+                <span class="qty-value">{{ item.quantity }}</span>
+                <button class="qty-btn" (click)="updateQuantity(item, item.quantity + 1)">+</button>
+              </div>
+              <p class="cart-item-subtotal">{{ (item.product.price * item.quantity) | currencyFormat }}</p>
+              <button class="cart-item-remove" (click)="remove(item)" title="Eliminar">✕</button>
             </div>
-            <div class="cart-item-qty">
-              <button (click)="updateQuantity(item, item.quantity - 1)">−</button>
-              <span>{{ item.quantity }}</span>
-              <button (click)="updateQuantity(item, item.quantity + 1)">+</button>
-            </div>
-            <p class="cart-item-subtotal">${{ (item.product.price * item.quantity).toLocaleString('es-AR') }}</p>
-            <button class="cart-item-remove" (click)="remove(item)">✕</button>
+          }
+        </div>
+
+        <div class="cart-footer">
+          <div class="cart-total-row">
+            <span class="cart-total-label">Total</span>
+            <span class="cart-total-value">{{ total | currencyFormat }}</span>
           </div>
-        }
-      </div>
 
-      <div class="cart-summary">
-        <div class="cart-total">
-          <strong>Total:</strong> ${{ total.toLocaleString('es-AR') }}
+          <div class="cart-form">
+            <label class="cart-label">Forma de pago</label>
+            <select class="cart-select" [(ngModel)]="paymentMethod">
+              <option value="Efectivo">Efectivo</option>
+              <option value="Transferencia">Transferencia</option>
+              <option value="Otro">Otro</option>
+            </select>
+
+            <label class="cart-label">Nombre (opcional)</label>
+            <input class="cart-input" type="text" [(ngModel)]="customerName" placeholder="Tu nombre">
+
+            <button class="cart-submit" (click)="submitOrder()" [disabled]="submitting">
+              {{ submitting ? 'Procesando…' : 'Continuar por WhatsApp' }}
+            </button>
+          </div>
+
+          <a class="cart-back-link" routerLink="/home">← Seguir comprando</a>
         </div>
-
-        <div class="cart-form">
-          <label>Forma de pago</label>
-          <select [(ngModel)]="paymentMethod">
-            <option value="Efectivo">Efectivo</option>
-            <option value="Transferencia">Transferencia</option>
-            <option value="Otro">Otro</option>
-          </select>
-
-          <label>Nombre (opcional)</label>
-          <input type="text" [(ngModel)]="customerName" placeholder="Tu nombre">
-
-          <button class="cart-submit" (click)="submitOrder()" [disabled]="submitting">
-            {{ submitting ? 'Procesando...' : 'Continuar por WhatsApp' }}
-          </button>
-        </div>
-      </div>
+      }
     }
-  }
+  </div>
 </section>

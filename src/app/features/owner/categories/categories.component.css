@@ -1,0 +1,4 @@
+/* Reuse same styles from admin component */
+:host {
+  display: block;
+}

@@ -1,0 +1,63 @@
+<div class="admin-page">
+  <header class="admin-header">
+    <h1 class="admin-title">Gestión de Categorías</h1>
+    <div class="admin-actions">
+      <button class="admin-btn" (click)="startCreate()">+ Nueva Categoría</button>
+      <button class="admin-btn admin-btn-outline" (click)="goBack()">Volver al Panel</button>
+    </div>
+  </header>
+
+  @if (error) {
+    <div class="admin-error">{{ error }}</div>
+  }
+
+  @if (editingCategory) {
+    <div class="admin-form">
+      <h2>{{ isCreating ? 'Nueva Categoría' : 'Editar Categoría' }}</h2>
+
+      <input class="form-input" [(ngModel)]="editingCategory.nombre" name="nombre" placeholder="Nombre" required style="width:100%;margin-bottom:.8rem;">
+
+      <label style="display:flex;align-items:center;gap:.5rem;font-size:.9rem;margin-bottom:1rem;">
+        <input type="checkbox" [(ngModel)]="editingCategory.activo" name="activo">
+        Categoría activa
+      </label>
+
+      <div class="form-actions">
+        <button class="admin-btn" (click)="save()" [disabled]="loading">
+          {{ loading ? 'Guardando…' : 'Guardar' }}
+        </button>
+        <button class="admin-btn admin-btn-outline" (click)="cancelEdit()">Cancelar</button>
+      </div>
+    </div>
+  }
+
+  <div class="admin-table-wrap">
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Activo</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (cat of categories; track cat.id) {
+          <tr>
+            <td>{{ cat.nombre }}</td>
+            <td>
+              <span [style.color]="cat.activo ? '#28a745' : '#d9534f'">
+                {{ cat.activo ? 'Sí' : 'No' }}
+              </span>
+            </td>
+            <td>
+              <button class="admin-btn admin-btn-sm" (click)="startEdit(cat)">Editar</button>
+              <button class="admin-btn admin-btn-sm admin-btn-danger" (click)="deleteCategory(cat.id)">Eliminar</button>
+            </td>
+          </tr>
+        } @empty {
+          <tr><td colspan="3" class="admin-empty">No hay categorías.</td></tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

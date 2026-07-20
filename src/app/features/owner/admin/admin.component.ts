@@ -4,18 +4,22 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { ProductService } from '../../../core/services/product.service';
+import { CategoryService, CategoryInterface } from '../../../core/services/category.service';
 import { ProductInterface } from '../../../core/interfaces/product.interface';
+import { CurrencyFormatPipe } from '../../../shared/pipes/currency-format.pipe';
 import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-admin',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, CurrencyFormatPipe],
   templateUrl: './admin.component.html',
-  styleUrl: './admin.component.css'
+  styleUrl: './admin-shared.css'
 })
 export class AdminComponent implements OnInit {
   products: ProductInterface[] = [];
+  filteredProducts: ProductInterface[] = [];
+  categories: CategoryInterface[] = [];
   editingProduct: Partial<ProductInterface> | null = null;
   selectedFile: File | null = null;
   apiUrl = environment.apiUrl;
@@ -23,13 +27,17 @@ export class AdminComponent implements OnInit {
   error = '';
   isCreating = false;
 
-  categories = ['Aros', 'Pulseras', 'Collares', 'Dijes', 'Anillos', 'Abridores', 'Accesorios', 'Invierno'];
+  filterCategoryId: number | null = null;
+  filterMaterial: string | null = null;
+  searchQuery = '';
+
   materials = ['Plata925', 'Oro', 'Bañados en Plata', 'Acero Blanco', 'Acero Dorado', 'Acero Quirurgico', 'Otro'];
 
   constructor(
     public auth: AuthService,
     private router: Router,
     private productService: ProductService,
+    private categoryService: CategoryService,
   ) {
     if (!auth.isLoggedIn()) {
       router.navigate(['/login']);
@@ -38,12 +46,49 @@ export class AdminComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadProducts();
+    this.loadCategories();
   }
 
   loadProducts(): void {
     this.productService.findAll().subscribe(data => {
       this.products = data;
+      this.applyFilters();
     });
+  }
+
+  loadCategories(): void {
+    this.categoryService.findAll().subscribe(data => {
+      this.categories = data;
+    });
+  }
+
+  applyFilters(): void {
+    let result = this.products;
+
+    if (this.filterCategoryId !== null) {
+      result = result.filter(p => (p.categoriaId ?? p.categoria?.id) === this.filterCategoryId);
+    }
+
+    if (this.filterMaterial !== null) {
+      result = result.filter(p => p.material === this.filterMaterial);
+    }
+
+    if (this.searchQuery.trim()) {
+      const q = this.searchQuery.toLowerCase().trim();
+      result = result.filter(p =>
+        p.name.toLowerCase().includes(q) ||
+        p.description.toLowerCase().includes(q)
+      );
+    }
+
+    this.filteredProducts = result;
+  }
+
+  clearFilters(): void {
+    this.filterCategoryId = null;
+    this.filterMaterial = null;
+    this.searchQuery = '';
+    this.applyFilters();
   }
 
   getImageUrl(product: ProductInterface): string {
@@ -52,29 +97,37 @@ export class AdminComponent implements OnInit {
     return `${this.apiUrl}${product.imageUrl}`;
   }
 
+  getCategoryName(product: ProductInterface): string {
+    return product.categoria?.nombre || product.category || '';
+  }
+
   startCreate(): void {
-    this.editingProduct = { name: '', description: '', price: 0, stock: 0, category: this.categories[0], material: this.materials[0] };
+    const firstCatId = this.categories.length > 0 ? this.categories[0].id : undefined;
+    this.editingProduct = { name: '', description: '', price: 0, stock: 0, categoriaId: firstCatId, material: this.materials[0] };
     this.selectedFile = null;
     this.isCreating = true;
+    document.body.style.overflow = 'hidden';
   }
 
   startEdit(product: ProductInterface): void {
-    this.editingProduct = { ...product };
+    this.editingProduct = {
+      ...product,
+      categoriaId: product.categoriaId ?? product.categoria?.id,
+    };
     this.selectedFile = null;
     this.isCreating = false;
-    setTimeout(() => {
-      document.getElementById('edit-form')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 0);
-  }
-
-  onFileSelected(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    this.selectedFile = input.files?.[0] || null;
+    document.body.style.overflow = 'hidden';
   }
 
   cancelEdit(): void {
     this.editingProduct = null;
     this.selectedFile = null;
+    document.body.style.overflow = '';
+  }
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.selectedFile = input.files?.[0] || null;
   }
 
   save(): void {
@@ -85,7 +138,7 @@ export class AdminComponent implements OnInit {
     }
 
     if (this.isCreating) {
-      if (!p.name || !p.description || !p.price || !p.category || !p.material) {
+      if (!p.name || !p.description || !p.price || !p.categoriaId || !p.material) {
         this.error = 'Completá todos los campos.';
         return;
       }
@@ -100,17 +153,10 @@ export class AdminComponent implements OnInit {
         description: p.description,
         price: p.price,
         stock: p.stock,
-        category: p.category,
+        categoriaId: p.categoriaId,
         material: p.material,
         imageUrl: imageUrl ?? p.imageUrl ?? undefined,
       };
-
-      if (!this.isCreating) {
-        const parsedPrice = Number(p.price);
-        if (Number.isFinite(parsedPrice)) {
-          data.price = parsedPrice;
-        }
-      }
 
       const request = this.isCreating
         ? this.productService.create(data)
@@ -150,5 +196,9 @@ export class AdminComponent implements OnInit {
 
   logout(): void {
     this.auth.logout();
+  }
+
+  goToCategories(): void {
+    this.router.navigate(['/admin/categories']);
   }
 }

@@ -36,10 +36,13 @@
   </div>
 
   <div class="catalogo-filters">
-    @for (cat of categories; track cat) {
+    <button class="filter-btn"
+      [class.active]="selectedCategory === null"
+      (click)="selectCategory(null)">Todas</button>
+    @for (cat of categories; track cat.id) {
       <button class="filter-btn"
-        [class.active]="(cat === 'Todas' && !selectedCategory) || cat === selectedCategory"
-        (click)="selectCategory(cat)">{{ cat }}</button>
+        [class.active]="cat.id === selectedCategory"
+        (click)="selectCategory(cat.id)">{{ cat.nombre }}</button>
     }
   </div>
 
@@ -51,9 +54,8 @@
         </div>
         <div class="product-info">
           <h3 class="product-name">{{ product.name }}</h3>
-          <span class="product-category">{{ product.category }}</span>
-          <!--${{ +product.price | number:'1.0-0':'es-AR' }}  Para cuando arregle que el back pase el precio como num y no como string-->
-          <span class="product-price">${{ +product.price.toLocaleString('es-AR') }}</span>
+          <span class="product-category">{{ getCategoryName(product) }}</span>
+          <span class="product-price">{{ product.price | currencyFormat }}</span>
         </div>
       </div>
     } @empty {
@@ -72,12 +74,11 @@
       </div>
       <div class="modal-body">
         <h2 class="modal-title">{{ selectedProduct.name }}</h2>
-        <span class="modal-category">{{ selectedProduct.category }}</span>
+        <span class="modal-category">{{ getCategoryName(selectedProduct) }}</span>
         <p class="modal-desc">{{ selectedProduct.description }}</p>
         <div class="modal-meta">
           <span class="modal-material">{{ selectedProduct.material }}</span>
-          <!--${{ +selectedProduct.price | number:'1.0-0':'es-AR' }}  Para cuando arregle que el back pase el precio como num y no como string-->
-          <span class="modal-price">${{ +selectedProduct.price.toLocaleString('es-AR') }}</span>
+          <span class="modal-price">{{ selectedProduct.price | currencyFormat }}</span>
         </div>
         @if (selectedProduct.stock === 0) {
           <button class="modal-wa" disabled style="opacity: 0.5; cursor: not-allowed;">Sin stock</button>

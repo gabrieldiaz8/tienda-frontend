@@ -1,0 +1,69 @@
+<div class="admin-page">
+  <header class="admin-header">
+    <h1 class="admin-title">Gestión de Usuarios</h1>
+    <div class="admin-actions">
+      <button class="admin-btn" (click)="startCreate()">+ Nuevo Usuario</button>
+      <button class="admin-btn admin-btn-outline" (click)="goBack()">Volver al Panel</button>
+    </div>
+  </header>
+
+  @if (error) {
+    <div class="admin-error">{{ error }}</div>
+  }
+
+  @if (editingUser) {
+    <div class="admin-form">
+      <h2>{{ isCreating ? 'Nuevo Usuario' : 'Editar Usuario' }}</h2>
+
+      <div class="form-grid">
+        <input class="form-input" [(ngModel)]="editingUser.name" name="name" placeholder="Nombre" required>
+        <input class="form-input" [(ngModel)]="editingUser.surname" name="surname" placeholder="Apellido" required>
+        <input class="form-input" [(ngModel)]="editingUser.usuario" name="usuario" placeholder="Usuario" required>
+        <input class="form-input" type="password" [(ngModel)]="editingUser.password" name="password"
+          [placeholder]="isCreating ? 'Contraseña' : 'Nueva contraseña (opcional)'">
+        <select class="form-input" [(ngModel)]="editingUser.role" name="role">
+          @for (role of roles; track role) {
+            <option [value]="role">{{ role }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="form-actions">
+        <button class="admin-btn" (click)="save()" [disabled]="loading">
+          {{ loading ? 'Guardando…' : 'Guardar' }}
+        </button>
+        <button class="admin-btn admin-btn-outline" (click)="cancelEdit()">Cancelar</button>
+      </div>
+    </div>
+  }
+
+  <div class="admin-table-wrap">
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Apellido</th>
+          <th>Usuario</th>
+          <th>Rol</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (user of users; track user.id) {
+          <tr>
+            <td>{{ user.name }}</td>
+            <td>{{ user.surname }}</td>
+            <td>{{ user.usuario }}</td>
+            <td>{{ user.role }}</td>
+            <td>
+              <button class="admin-btn admin-btn-sm" (click)="startEdit(user)">Editar</button>
+              <button class="admin-btn admin-btn-sm admin-btn-danger" (click)="deleteUser(user.id)">Eliminar</button>
+            </td>
+          </tr>
+        } @empty {
+          <tr><td colspan="5" class="admin-empty">No hay usuarios.</td></tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
