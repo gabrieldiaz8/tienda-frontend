@@ -103,7 +103,7 @@ export class AdminComponent implements OnInit {
 
   startCreate(): void {
     const firstCatId = this.categories.length > 0 ? this.categories[0].id : undefined;
-    this.editingProduct = { name: '', description: '', price: 0, stock: 0, categoriaId: firstCatId, material: this.materials[0] };
+    this.editingProduct = { name: '', description: '', price: undefined, stock: undefined, categoriaId: firstCatId, material: this.materials[0] };
     this.selectedFile = null;
     this.isCreating = true;
     document.body.style.overflow = 'hidden';
