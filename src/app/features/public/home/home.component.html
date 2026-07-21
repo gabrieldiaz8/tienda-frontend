@@ -77,7 +77,7 @@
         <span class="modal-category">{{ getCategoryName(selectedProduct) }}</span>
         <p class="modal-desc">{{ selectedProduct.description }}</p>
         <div class="modal-meta">
-          <span class="modal-material">{{ selectedProduct.material }}</span>
+          <span class="modal-material">{{ selectedProduct.materialRel?.nombre || selectedProduct.material }}</span>
           <span class="modal-price">{{ selectedProduct.price | currencyFormat }}</span>
         </div>
         @if (selectedProduct.stock === 0) {

@@ -4,6 +4,13 @@ export interface ProductCategory {
   activo: boolean;
 }
 
+export interface ProductMaterialRel {
+  id: number;
+  nombre: string;
+  activo: boolean;
+  orden: number;
+}
+
 export interface ProductInterface {
   id: number;
   name: string;
@@ -12,7 +19,9 @@ export interface ProductInterface {
   category?: string;
   categoriaId?: number;
   categoria?: ProductCategory;
-  material: string;
+  material?: string;
+  materialId?: number;
+  materialRel?: ProductMaterialRel;
   imageUrl?: string | null;
   createdByUserId: number;
   stock: number;

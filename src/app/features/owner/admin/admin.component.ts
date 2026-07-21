@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { ProductService } from '../../../core/services/product.service';
 import { CategoryService, CategoryInterface } from '../../../core/services/category.service';
+import { MaterialService, MaterialInterface } from '../../../core/services/material.service';
 import { ProductInterface } from '../../../core/interfaces/product.interface';
 import { CurrencyFormatPipe } from '../../../shared/pipes/currency-format.pipe';
 import { environment } from '../../../../environments/environment';
@@ -20,6 +21,7 @@ export class AdminComponent implements OnInit {
   products: ProductInterface[] = [];
   filteredProducts: ProductInterface[] = [];
   categories: CategoryInterface[] = [];
+  materials: MaterialInterface[] = [];
   editingProduct: Partial<ProductInterface> | null = null;
   selectedFile: File | null = null;
   apiUrl = environment.apiUrl;
@@ -28,16 +30,15 @@ export class AdminComponent implements OnInit {
   isCreating = false;
 
   filterCategoryId: number | null = null;
-  filterMaterial: string | null = null;
+  filterMaterial: number | null = null;
   searchQuery = '';
-
-  materials = ['Plata925', 'Oro', 'Bañados en Plata', 'Acero Blanco', 'Acero Dorado', 'Acero Quirurgico', 'Otro'];
 
   constructor(
     public auth: AuthService,
     private router: Router,
     private productService: ProductService,
     private categoryService: CategoryService,
+    private materialService: MaterialService,
   ) {
     if (!auth.isLoggedIn()) {
       router.navigate(['/login']);
@@ -47,6 +48,7 @@ export class AdminComponent implements OnInit {
   ngOnInit(): void {
     this.loadProducts();
     this.loadCategories();
+    this.loadMaterials();
   }
 
   loadProducts(): void {
@@ -62,6 +64,12 @@ export class AdminComponent implements OnInit {
     });
   }
 
+  loadMaterials(): void {
+    this.materialService.findAll().subscribe(data => {
+      this.materials = data;
+    });
+  }
+
   applyFilters(): void {
     let result = this.products;
 
@@ -70,7 +78,7 @@ export class AdminComponent implements OnInit {
     }
 
     if (this.filterMaterial !== null) {
-      result = result.filter(p => p.material === this.filterMaterial);
+      result = result.filter(p => (p.materialId ?? p.materialRel?.id) === this.filterMaterial);
     }
 
     if (this.searchQuery.trim()) {
@@ -101,9 +109,14 @@ export class AdminComponent implements OnInit {
     return product.categoria?.nombre || product.category || '';
   }
 
+  getMaterialName(product: ProductInterface): string {
+    return product.materialRel?.nombre || product.material || '';
+  }
+
   startCreate(): void {
     const firstCatId = this.categories.length > 0 ? this.categories[0].id : undefined;
-    this.editingProduct = { name: '', description: '', price: undefined, stock: undefined, categoriaId: firstCatId, material: this.materials[0] };
+    const firstMatId = this.materials.length > 0 ? this.materials[0].id : undefined;
+    this.editingProduct = { name: '', description: '', price: undefined, stock: undefined, categoriaId: firstCatId, materialId: firstMatId };
     this.selectedFile = null;
     this.isCreating = true;
     document.body.style.overflow = 'hidden';
@@ -113,6 +126,7 @@ export class AdminComponent implements OnInit {
     this.editingProduct = {
       ...product,
       categoriaId: product.categoriaId ?? product.categoria?.id,
+      materialId: product.materialId ?? product.materialRel?.id,
     };
     this.selectedFile = null;
     this.isCreating = false;
@@ -138,7 +152,7 @@ export class AdminComponent implements OnInit {
     }
 
     if (this.isCreating) {
-      if (!p.name || !p.description || !p.price || !p.categoriaId || !p.material) {
+      if (!p.name || !p.description || !p.price || !p.categoriaId || !p.materialId) {
         this.error = 'Completá todos los campos.';
         return;
       }
@@ -154,7 +168,7 @@ export class AdminComponent implements OnInit {
         price: p.price,
         stock: p.stock,
         categoriaId: Number(p.categoriaId),
-        material: p.material,
+        materialId: Number(p.materialId),
         imageUrl: imageUrl ?? p.imageUrl ?? undefined,
       };
 

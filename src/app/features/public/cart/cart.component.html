@@ -15,7 +15,7 @@
               <img [src]="item.product.imageUrl || '/placeholder.svg'" [alt]="item.product.name" class="cart-item-img">
               <div class="cart-item-info">
                 <h3 class="cart-item-name">{{ item.product.name }}</h3>
-                <p class="cart-item-meta">{{ item.product.material }} · {{ item.product.categoria?.nombre || item.product.category }}</p>
+                <p class="cart-item-meta">{{ item.product.materialRel?.nombre || item.product.material }} · {{ item.product.categoria?.nombre || item.product.category }}</p>
                 <p class="cart-item-price">{{ item.product.price | currencyFormat }} c/u</p>
               </div>
               <div class="cart-item-qty">

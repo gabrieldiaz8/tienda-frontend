@@ -31,9 +31,9 @@
               }
             </select>
 
-            <select class="form-input" [(ngModel)]="editingProduct.material" name="material">
-              @for (mat of materials; track mat) {
-                <option [value]="mat">{{ mat }}</option>
+            <select class="form-input" [(ngModel)]="editingProduct.materialId" name="materialId">
+              @for (mat of materials; track mat.id) {
+                <option [value]="mat.id">{{ mat.nombre }}</option>
               }
             </select>
           </div>
@@ -73,8 +73,8 @@
 
     <select class="form-input filter-select" [(ngModel)]="filterMaterial" (ngModelChange)="applyFilters()">
       <option [ngValue]="null">Todos los materiales</option>
-      @for (mat of materials; track mat) {
-        <option [value]="mat">{{ mat }}</option>
+      @for (mat of materials; track mat.id) {
+        <option [ngValue]="mat.id">{{ mat.nombre }}</option>
       }
     </select>
 
@@ -104,7 +104,7 @@
             </td>
             <td>{{ product.name }}</td>
             <td>{{ getCategoryName(product) }}</td>
-            <td>{{ product.material }}</td>
+            <td>{{ getMaterialName(product) }}</td>
             <td>{{ product.price | currencyFormat }}</td>
             <td>{{ product.stock }}</td>
             <td>
