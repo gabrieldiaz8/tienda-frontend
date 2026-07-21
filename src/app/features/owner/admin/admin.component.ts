@@ -153,7 +153,7 @@ export class AdminComponent implements OnInit {
         description: p.description,
         price: p.price,
         stock: p.stock,
-        categoriaId: p.categoriaId,
+        categoriaId: Number(p.categoriaId),
         material: p.material,
         imageUrl: imageUrl ?? p.imageUrl ?? undefined,
       };
