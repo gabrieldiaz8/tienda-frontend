@@ -1,0 +1,1 @@
+import{Na as e}from"./chunk-DOF22HMG.js";function u(r){if(r==null)return"";let n=Number(r);return Number.isFinite(n)?"$"+n.toLocaleString("es-AR"):""}var t=class r{transform(n){return u(n)}static \u0275fac=function(i){return new(i||r)};static \u0275pipe=e({name:"currencyFormat",type:r,pure:!0})};export{u as a,t as b};
