@@ -7,9 +7,9 @@
     <li><a (click)="scrollTo('contacto')">Contacto</a></li>
     @if (isLoggedIn && (role === 'OWNER' || role === 'SUPER_ADMIN')) {
       <li><a (click)="goToAdmin()">Productos</a></li>
+      <li><a routerLink="/admin/categories">Categorías</a></li>
     }
     @if (isLoggedIn && role === 'SUPER_ADMIN') {
-      <li><a routerLink="/admin/categories">Categorías</a></li>
       <li><a routerLink="/admin/users">Usuarios</a></li>
     }
   </ul>
@@ -38,7 +38,7 @@
     -->
 
     @if (isLoggedIn) {
-      <button class="nav-logout" (click)="logout()" title="Cerrar sesión">Salir</button>
+      <button class="nav-logout" (click)="logout()" title="Cerrar sesión">Cerrar Sesión</button>
     } @else {
       <a routerLink="/login" class="nav-login">Ingresar</a>
     }
