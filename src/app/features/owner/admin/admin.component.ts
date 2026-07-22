@@ -165,8 +165,8 @@ export class AdminComponent implements OnInit {
       const data: Partial<ProductInterface> = {
         name: p.name,
         description: p.description,
-        price: p.price,
-        stock: p.stock,
+        price: Number(p.price),
+        stock: Number(p.stock),
         categoriaId: Number(p.categoriaId),
         materialId: Number(p.materialId),
         imageUrl: imageUrl ?? p.imageUrl ?? undefined,

@@ -29,13 +29,13 @@
 
             <select class="form-input" [(ngModel)]="editingProduct.categoriaId" name="categoriaId">
               @for (cat of categories; track cat.id) {
-                <option [value]="cat.id">{{ cat.nombre }}</option>
+                <option [ngValue]="cat.id">{{ cat.nombre }}</option>
               }
             </select>
 
             <select class="form-input" [(ngModel)]="editingProduct.materialId" name="materialId">
               @for (mat of materials; track mat.id) {
-                <option [value]="mat.id">{{ mat.nombre }}</option>
+                <option [ngValue]="mat.id">{{ mat.nombre }}</option>
               }
             </select>
           </div>
